@@ -1,0 +1,11 @@
+[package]
+name = "todomvc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+console_error_panic_hook.workspace = true
+console_log.workspace = true
+log.workspace = true
+ravel-web.workspace = true
+web-sys = { workspace = true, features = ["HtmlCollection", "HtmlInputElement", "HtmlFormElement"] }

@@ -1,0 +1,12 @@
+table, thead, tbody, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+thead {
+  font-weight: bold;
+}
+
+td {
+  min-width: 5rem;
+}

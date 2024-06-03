@@ -1,0 +1,16 @@
+[package]
+name = "ravel-web"
+version = "0.1.0"
+edition = "2021"
+description = "An experimental approach to UI in Rust with a focus on ergonomics, efficiency, and simplicity."
+license = "MIT"
+repository = "https://github.com/kmicklas/ravel"
+
+[dependencies]
+atomic-waker.workspace = true
+futures-micro.workspace = true
+gloo-events.workspace = true
+gloo-utils.workspace = true
+ravel.workspace = true
+wasm-bindgen-futures.workspace = true
+web-sys = { workspace = true, features = ["Node", "Element", "Text", "Comment"] }

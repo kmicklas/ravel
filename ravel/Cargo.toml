@@ -1,0 +1,10 @@
+[package]
+name = "ravel"
+version = "0.1.0"
+edition = "2021"
+description = "An experimental approach to UI in Rust with a focus on ergonomics, efficiency, and simplicity."
+license = "MIT"
+repository = "https://github.com/kmicklas/ravel"
+
+[dependencies]
+paste.workspace = true
