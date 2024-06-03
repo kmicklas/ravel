@@ -3,6 +3,9 @@ name = "todomvc"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.release]
+release = false
+
 [dependencies]
 console_error_panic_hook.workspace = true
 console_log.workspace = true
