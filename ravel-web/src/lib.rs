@@ -9,10 +9,10 @@ use ravel::{Builder, Cx, CxRep};
 
 mod any;
 pub mod attr;
+pub mod collections;
 mod dom;
 pub mod el;
 pub mod event;
-pub mod list;
 mod option;
 pub mod run;
 pub mod text;

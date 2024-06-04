@@ -2,8 +2,8 @@ use std::collections::BTreeMap;
 
 use ravel::with;
 use ravel_web::{
-    any, attr, el, event::*, format_text, list::btree_map, run::spawn_body,
-    text::text, State, View,
+    any, attr, collections::btree_map, el, event::*, format_text,
+    run::spawn_body, text::text, State, View,
 };
 use web_sys::{
     wasm_bindgen::{JsCast as _, UnwrapThrowExt},

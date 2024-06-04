@@ -1,5 +1,3 @@
-//! Views over dynamically sized collections.
-
 use std::{
     cmp::Ordering, collections::BTreeMap, marker::PhantomData, ops::Bound,
 };
