@@ -2,8 +2,8 @@ use std::collections::BTreeMap;
 
 use ravel::with;
 use ravel_web::{
-    any, attr, collections::btree_map, el, event::*, format_text,
-    run::spawn_body, text::text, State, View,
+    any, attr, collections::btree_map, collections::slice, el, event::*,
+    format_text, run::spawn_body, text::text, State, View,
 };
 use web_sys::{
     wasm_bindgen::{JsCast as _, UnwrapThrowExt},
@@ -14,7 +14,8 @@ use web_sys::{
 struct Model {
     count: usize,
     message: String,
-    items: BTreeMap<usize, String>,
+    item_map: BTreeMap<usize, String>,
+    item_vec: Vec<(usize, String)>,
 }
 
 /// We can build our application modularly out of components. A component is
@@ -81,7 +82,8 @@ fn events() -> impl View<State = impl State<Model>> {
             "Increment count",
             // We can update the model in response to a chosen HTML event type.
             on_(Click, |model: &mut Model| {
-                model.items.insert(model.count, model.message.clone());
+                model.item_map.insert(model.count, model.message.clone());
+                model.item_vec.push((model.count, model.message.clone()));
                 model.count += 1;
             }),
         ))),
@@ -130,21 +132,46 @@ fn dynamic_view(model: &Model) -> impl '_ + View<State = impl State<Model>> {
 }
 
 /// Any non-trivial application will have some dynamically sized list data.
+///
 /// With a similar structure to our use of [`with`] above, we can generate a
-/// [`View`] over a [`BTreeMap`] with [`btree_map`].
-fn list(model: &Model) -> impl '_ + View<State = impl State<Model>> {
+/// [`View`] over a [`BTreeMap`] with [`btree_map()`]. This is useful when the
+/// entries are ordered by some type of key, but may be inserted or removed at
+/// any position.
+///
+/// If the data is just an array which grows or shrinks at the end, we can use
+/// [`slice()`] to generate a [`View`] over a [`Vec`]/slice.
+fn lists(model: &Model) -> impl '_ + View<State = impl State<Model>> {
     (
-        el::h2("List view"),
+        el::h2("Map view"),
         el::p(el::table((
             el::thead(el::tr((el::td(()), el::td("Id"), el::td("Message")))),
-            el::tbody(btree_map(&model.items, |cx, key, value| {
+            el::tbody(btree_map(&model.item_map, |cx, key, value| {
+                let key = *key;
                 cx.build(el::tr((
                     el::td(el::button((
                         "Remove",
                         on_(Click, {
-                            let key = *key;
                             move |model: &mut Model| {
-                                model.items.remove(&key);
+                                model.item_map.remove(&key);
+                            }
+                        }),
+                    ))),
+                    el::td(format_text!("{}", key)),
+                    el::td(text(value)),
+                )))
+            })),
+        ))),
+        el::h2("Slice view"),
+        el::p(el::table((
+            el::thead(el::tr((el::td(()), el::td("Id"), el::td("Message")))),
+            el::tbody(slice(&model.item_vec, |cx, i, (key, value)| {
+                let key = *key;
+                cx.build(el::tr((
+                    el::td(el::button((
+                        "Truncate",
+                        on_(Click, {
+                            move |model: &mut Model| {
+                                model.item_vec.truncate(i);
                             }
                         }),
                     ))),
@@ -163,7 +190,7 @@ fn tutorial(model: &Model) -> impl '_ + View<State = impl State<Model>> {
         state(model),
         events(),
         dynamic_view(model),
-        list(model),
+        lists(model),
     )
 }
 
@@ -178,7 +205,8 @@ fn main() {
         Model {
             count: 0,
             message: String::new(),
-            items: BTreeMap::new(),
+            item_map: BTreeMap::new(),
+            item_vec: Vec::new(),
         },
         // Here we could, for example, synchronize the model to an external
         // data store.
