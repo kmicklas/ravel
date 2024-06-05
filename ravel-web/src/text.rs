@@ -79,6 +79,7 @@ pub struct Display<'a, T: ToString + PartialEq + Clone> {
     value: &'a T,
 }
 
+impl<'a, T: 'static + ToString + PartialEq + Clone> View for Display<'a, T> {}
 impl<'a, T: 'static + ToString + PartialEq + Clone> Builder<Web>
     for Display<'a, T>
 {
