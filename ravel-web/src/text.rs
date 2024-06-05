@@ -74,6 +74,55 @@ impl Builder<Web> for &'static str {
     }
 }
 
+/// Displays a value, updating when not equal to the previous value.
+pub struct Display<'a, T: ToString + PartialEq + Clone> {
+    value: &'a T,
+}
+
+impl<'a, T: 'static + ToString + PartialEq + Clone> Builder<Web>
+    for Display<'a, T>
+{
+    type State = DisplayState<T>;
+
+    fn build(self, cx: BuildCx<'_>) -> Self::State {
+        let data = self.value.to_string();
+
+        let node = web_sys::Text::new_with_data(&data).unwrap_throw();
+        cx.position.insert(&node);
+
+        DisplayState {
+            node,
+            value: self.value.clone(),
+        }
+    }
+
+    fn rebuild(self, _: RebuildCx<'_>, state: &mut Self::State) {
+        if *self.value == state.value {
+            return;
+        }
+
+        state.node.set_data(&self.value.to_string());
+        state.value = self.value.clone();
+    }
+}
+
+/// The state for a [`Display`].
+pub struct DisplayState<T: ToString + PartialEq> {
+    node: web_sys::Text,
+    value: T,
+}
+
+impl<T: 'static + ToString + PartialEq, Output> State<Output>
+    for DisplayState<T>
+{
+    fn run(&mut self, _: &mut Output) {}
+}
+
+/// Displays a value, updating when not equal to the previous value.
+pub fn display<T: ToString + PartialEq + Clone>(value: &T) -> Display<'_, T> {
+    Display { value }
+}
+
 impl<'a> View for Arguments<'a> {}
 impl<'a> Builder<Web> for Arguments<'a> {
     type State = TextState<Cow<'static, str>>;

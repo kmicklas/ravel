@@ -2,8 +2,14 @@ use std::collections::BTreeMap;
 
 use ravel::with;
 use ravel_web::{
-    any, attr, collections::btree_map, collections::slice, el, event::*,
-    format_text, run::spawn_body, text::text, State, View,
+    any, attr,
+    collections::{btree_map, slice},
+    el,
+    event::*,
+    format_text,
+    run::spawn_body,
+    text::{display, text},
+    State, View,
 };
 use web_sys::{
     wasm_bindgen::{JsCast as _, UnwrapThrowExt},
@@ -51,11 +57,16 @@ fn basic_html() -> impl View<State = impl State<Model>> {
 fn state(model: &Model) -> impl '_ + View<State = impl State<Model>> {
     (
         el::h2("State"),
-        el::p((
-            "Count: ",
+        el::p(
             // To generate strings dynamically, we can use standard format
             // strings using [`format_text`].
-            format_text!("{}", model.count),
+            format_text!("Count: {}", model.count),
+        ),
+        el::p((
+            "Also count: ",
+            // In the very common case of just displaying a scalar value like a
+            // number, it is easier and more efficient to use [`display`].
+            display(&model.count),
         )),
         el::p((
             "Message: ",
