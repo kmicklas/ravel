@@ -66,7 +66,7 @@ fn state(model: &Model) -> impl '_ + View<State = impl State<Model>> {
             "Also count: ",
             // In the very common case of just displaying a scalar value like a
             // number, it is easier and more efficient to use [`display`].
-            display(&model.count),
+            display(model.count),
         )),
         el::p((
             "Message: ",

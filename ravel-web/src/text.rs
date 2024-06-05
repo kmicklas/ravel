@@ -75,13 +75,44 @@ impl Builder<Web> for &'static str {
 }
 
 /// Displays a value, updating when not equal to the previous value.
-pub struct Display<'a, T: ToString + PartialEq + Clone> {
+pub struct Display<T: ToString + PartialEq + Clone> {
+    value: T,
+}
+
+impl<T: 'static + ToString + PartialEq + Clone> View for Display<T> {}
+impl<T: 'static + ToString + PartialEq + Clone> Builder<Web> for Display<T> {
+    type State = DisplayState<T>;
+
+    fn build(self, cx: BuildCx<'_>) -> Self::State {
+        let data = self.value.to_string();
+
+        let node = web_sys::Text::new_with_data(&data).unwrap_throw();
+        cx.position.insert(&node);
+
+        DisplayState {
+            node,
+            value: self.value.clone(),
+        }
+    }
+
+    fn rebuild(self, _: RebuildCx<'_>, state: &mut Self::State) {
+        if self.value == state.value {
+            return;
+        }
+
+        state.node.set_data(&self.value.to_string());
+        state.value = self.value.clone();
+    }
+}
+
+/// Displays a borrowed value, updating when not equal to the previous value.
+pub struct DisplayRef<'a, T: ToString + PartialEq + Clone> {
     value: &'a T,
 }
 
-impl<'a, T: 'static + ToString + PartialEq + Clone> View for Display<'a, T> {}
+impl<'a, T: 'static + ToString + PartialEq + Clone> View for DisplayRef<'a, T> {}
 impl<'a, T: 'static + ToString + PartialEq + Clone> Builder<Web>
-    for Display<'a, T>
+    for DisplayRef<'a, T>
 {
     type State = DisplayState<T>;
 
@@ -120,8 +151,15 @@ impl<T: 'static + ToString + PartialEq, Output> State<Output>
 }
 
 /// Displays a value, updating when not equal to the previous value.
-pub fn display<T: ToString + PartialEq + Clone>(value: &T) -> Display<'_, T> {
+pub fn display<T: ToString + PartialEq + Clone>(value: T) -> Display<T> {
     Display { value }
+}
+
+/// Displays a borrowed value, updating when not equal to the previous value.
+pub fn display_ref<T: ToString + PartialEq + Clone>(
+    value: &T,
+) -> DisplayRef<'_, T> {
+    DisplayRef { value }
 }
 
 impl<'a> View for Arguments<'a> {}
