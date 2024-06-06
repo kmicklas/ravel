@@ -20,7 +20,7 @@ impl<T: Any> AsAny for T {
     }
 }
 
-/// A wrapper around a [`View`], erasing its [`State`] type.
+/// A wrapper around a [`trait@View`], erasing its [`State`] type.
 pub struct AnyView<V: View, Output> {
     inner: V,
     phantom: PhantomData<fn(&mut Output)>,
@@ -80,7 +80,7 @@ impl<Output: 'static> State<Output> for AnyState<Output> {
     }
 }
 
-/// Wraps a [`View`], erasing its [`State`] type.
+/// Wraps a [`trait@View`], erasing its [`State`] type.
 ///
 /// Using this inside a [`ravel::with`] callback makes it possible to dynamically
 /// choose an implementation type.

@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use ravel_web::{
     attr::*, collections::btree_map, el::*, event::*, format_text,
-    run::spawn_body, text::text, State, View,
+    run::spawn_body, text::text, View,
 };
 use web_sys::wasm_bindgen::{JsCast as _, UnwrapThrowExt};
 
@@ -50,7 +50,7 @@ impl Model {
 }
 
 impl Filter {
-    fn button(self, selected: Self) -> impl View<State = impl State<Model>> {
+    fn button(self, selected: Self) -> View!(Model) {
         li(a((
             format_text!("{:?}", self),
             class((selected == self).then_some("selected")),
@@ -59,11 +59,7 @@ impl Filter {
     }
 }
 
-fn item(
-    filter: Filter,
-    id: usize,
-    item: &Item,
-) -> impl '_ + View<State = impl State<Model>> {
+fn item(filter: Filter, id: usize, item: &Item) -> View!(Model, '_) {
     let show = match filter {
         Filter::All => true,
         Filter::Active => !item.checked,
@@ -125,7 +121,7 @@ fn item(
     })
 }
 
-fn todomvc(model: &Model) -> impl '_ + View<State = impl State<Model>> {
+fn todomvc(model: &Model) -> View!(Model, '_) {
     (
         section((
             class("todoapp"),

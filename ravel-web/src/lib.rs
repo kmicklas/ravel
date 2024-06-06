@@ -102,3 +102,19 @@ tuple_view!(a, b, c, d, e);
 tuple_view!(a, b, c, d, e, f);
 tuple_view!(a, b, c, d, e, f, g);
 tuple_view!(a, b, c, d, e, f, g, h);
+
+#[doc(hidden)]
+pub trait Captures<'a> {}
+impl<'a, T: ?Sized> Captures<'a> for T {}
+
+/// A convenience macro for declaring a [`trait@View`] type.
+///
+/// The first parameter is the `Output` type of the [`trait@View`]'s
+/// [`Builder::State`]. Any additional parameters are captured lifetimes.
+#[macro_export]
+macro_rules! View {
+    ($output:ty $(, $a:lifetime)*) => {
+        impl $crate::View<State = impl $crate::State<$output>>
+          $(+ $crate::Captures<$a>)*
+    };
+}

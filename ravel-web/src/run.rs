@@ -10,8 +10,8 @@ use crate::{dom::Position, BuildCx, Cx, RebuildCx, State, Web};
 /// Runs a component on an arbitrary [`web_sys::Element`].
 ///
 /// The `render` callback has read-only access to the `Data`. Due to limitations
-/// of Rust's type system, you cannot pass a [`crate::View`] directly here. Instead,
-/// the callback must use [`Cx::build`].
+/// of Rust's type system, you cannot pass a [`trait@crate::View`] directly
+/// here. Instead, the callback must use [`Cx::build`].
 ///
 /// The `sync` callback can update the `Data`, and optionally return [`Some`]
 /// value which aborts the event loop.

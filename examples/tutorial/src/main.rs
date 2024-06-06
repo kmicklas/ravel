@@ -9,7 +9,7 @@ use ravel_web::{
     format_text,
     run::spawn_body,
     text::{display, text},
-    State, View,
+    View,
 };
 use web_sys::{
     wasm_bindgen::{JsCast as _, UnwrapThrowExt},
@@ -25,13 +25,15 @@ struct Model {
 }
 
 /// We can build our application modularly out of components. A component is
-/// just some function which returns a [`View`]. For now, you can ignore the
-/// associated [`State`] constraint.
-fn basic_html() -> impl View<State = impl State<Model>> {
-    // We can build [`View`]s out of HTML elements, which are defined in the
-    // [`el`] module. These take another [`View`] parameter for their body.
+/// just some function which returns a [`View!`].
+///
+/// ([`View!`] is just a convenience macro for a slightly verbose constraint on
+/// [`trait@View`].)
+fn basic_html() -> View!(Model) {
+    // We can build views out of HTML elements, which are defined in the
+    // [`el`] module. These take another view parameter for their body.
     //
-    // We can also compose [`View`]s using tuples.
+    // We can also compose views using tuples.
     el::header((
         el::h1(
             // To produce text, we can directly use a [`&'static str`].
@@ -52,9 +54,8 @@ fn basic_html() -> impl View<State = impl State<Model>> {
 
 /// Components can take data in parameters, which can be borrowed from shared
 /// state such as our [`Model`]. When using borrowed data, we need to add an
-/// appropriate bound to the return type for the captured lifetime (here
-/// `'_ +`).
-fn state(model: &Model) -> impl '_ + View<State = impl State<Model>> {
+/// appropriate bound to the return type for the captured lifetime (here `'_`).
+fn state(model: &Model) -> View!(Model, '_) {
     (
         el::h2("State"),
         el::p(
@@ -81,12 +82,9 @@ fn state(model: &Model) -> impl '_ + View<State = impl State<Model>> {
 
 /// So far, we've only read data from our model, but have not changed it.
 /// Typically, we want to do this in response to events. Now we get to the
-/// `State = impl State<Model>` constraint. Using [`Model`] here lets us write
-/// event handlers which have mutable access to the data.
-///
-/// Note that we never want to capture any lifetime parameters on the [`State`]
-/// type, which must remain `'static`.
-fn events() -> impl View<State = impl State<Model>> {
+/// [`Model`] parameter to [`View!`]. Event handlers have mutable access to this
+/// type when they run.
+fn events() -> View!(Model) {
     (
         el::h2("Events"),
         el::p(el::button((
@@ -116,7 +114,7 @@ fn events() -> impl View<State = impl State<Model>> {
 
 /// All of our views so far have had a static structure. Sometimes, we need to
 /// swap out or hide various components.
-fn dynamic_view(model: &Model) -> impl '_ + View<State = impl State<Model>> {
+fn dynamic_view(model: &Model) -> View!(Model, '_) {
     (
         el::h2("Dynamic view"),
         // In the general case, we need the following pattern to dynamically
@@ -145,13 +143,13 @@ fn dynamic_view(model: &Model) -> impl '_ + View<State = impl State<Model>> {
 /// Any non-trivial application will have some dynamically sized list data.
 ///
 /// With a similar structure to our use of [`with`] above, we can generate a
-/// [`View`] over a [`BTreeMap`] with [`btree_map()`]. This is useful when the
-/// entries are ordered by some type of key, but may be inserted or removed at
-/// any position.
+/// [`trait@View`] over a [`BTreeMap`] with [`btree_map()`]. This is useful when
+///  the entries are ordered by some type of key, but may be inserted or removed
+/// at any position.
 ///
 /// If the data is just an array which grows or shrinks at the end, we can use
-/// [`slice()`] to generate a [`View`] over a [`Vec`]/slice.
-fn lists(model: &Model) -> impl '_ + View<State = impl State<Model>> {
+/// [`slice()`] to generate a [`trait@View`] over a [`Vec`]/slice.
+fn lists(model: &Model) -> View!(Model, '_) {
     (
         el::h2("Map view"),
         el::p(el::table((
@@ -195,7 +193,7 @@ fn lists(model: &Model) -> impl '_ + View<State = impl State<Model>> {
 }
 
 /// Putting it all together...
-fn tutorial(model: &Model) -> impl '_ + View<State = impl State<Model>> {
+fn tutorial(model: &Model) -> View!(Model, '_) {
     (
         basic_html(),
         state(model),
