@@ -5,7 +5,7 @@ use ravel_web::{
     any, attr,
     collections::{btree_map, slice},
     el,
-    event::*,
+    event::{self, on, on_},
     format_text,
     run::spawn_body,
     text::{display, text},
@@ -92,7 +92,7 @@ fn events() -> impl View<State = impl State<Model>> {
         el::p(el::button((
             "Increment count",
             // We can update the model in response to a chosen HTML event type.
-            on_(Click, |model: &mut Model| {
+            on_(event::Click, |model: &mut Model| {
                 model.item_map.insert(model.count, model.message.clone());
                 model.item_vec.push((model.count, model.message.clone()));
                 model.count += 1;
@@ -102,7 +102,7 @@ fn events() -> impl View<State = impl State<Model>> {
             "Message: ",
             // [`on`], unlike [`on_`], also gives us access to the underlying
             // [`web_sys::Event`].
-            el::input(on(InputEvent, |model: &mut Model, event| {
+            el::input(on(event::InputEvent, |model: &mut Model, event| {
                 model.message = event
                     .target()
                     .unwrap_throw()
@@ -161,7 +161,7 @@ fn lists(model: &Model) -> impl '_ + View<State = impl State<Model>> {
                 cx.build(el::tr((
                     el::td(el::button((
                         "Remove",
-                        on_(Click, {
+                        on_(event::Click, {
                             move |model: &mut Model| {
                                 model.item_map.remove(&key);
                             }
@@ -180,7 +180,7 @@ fn lists(model: &Model) -> impl '_ + View<State = impl State<Model>> {
                 cx.build(el::tr((
                     el::td(el::button((
                         "Truncate",
-                        on_(Click, {
+                        on_(event::Click, {
                             move |model: &mut Model| {
                                 model.item_vec.truncate(i);
                             }
