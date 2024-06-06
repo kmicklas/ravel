@@ -50,6 +50,9 @@ pub trait State<Output>: AsAny {
     fn run(&mut self, output: &mut Output);
 }
 
+/// A marker trait for the [`State`] types of a [`trait@View`].
+pub trait ViewMarker {}
+
 macro_rules! tuple_state {
     ($($a:ident),*) => {
         #[allow(non_camel_case_types)]
@@ -61,6 +64,13 @@ macro_rules! tuple_state {
                 let ($($a,)*) = self;
                 $($a.run(_output);)*
             }
+        }
+
+        #[allow(non_camel_case_types)]
+        impl<$($a),*> ViewMarker for ($($a,)*)
+        where
+            $($a: ViewMarker,)*
+        {
         }
     };
 }
@@ -84,24 +94,16 @@ tuple_state!(a, b, c, d, e, f, g, h);
 /// This is implemented for [`el`] and [`text`] types and composites thereof,
 /// but not for [`attr`] or [`event`] types, which must always be permanently
 /// attached to an element.
-pub trait View: Builder<Web> {}
-
-macro_rules! tuple_view {
-    ($($a:ident),*) => {
-        #[allow(non_camel_case_types)]
-        impl<$($a: View),*> View for ($($a,)*) {}
-    };
+pub trait View: Builder<Web, State = Self::ViewState> {
+    type ViewState: ViewMarker;
 }
 
-tuple_view!();
-tuple_view!(a);
-tuple_view!(a, b);
-tuple_view!(a, b, c);
-tuple_view!(a, b, c, d);
-tuple_view!(a, b, c, d, e);
-tuple_view!(a, b, c, d, e, f);
-tuple_view!(a, b, c, d, e, f, g);
-tuple_view!(a, b, c, d, e, f, g, h);
+impl<T, S: ViewMarker> View for T
+where
+    T: Builder<Web, State = S>,
+{
+    type ViewState = S;
+}
 
 #[doc(hidden)]
 pub trait Captures<'a> {}
@@ -114,7 +116,7 @@ impl<'a, T: ?Sized> Captures<'a> for T {}
 #[macro_export]
 macro_rules! View {
     ($output:ty $(, $a:lifetime)*) => {
-        impl $crate::View<State = impl $crate::State<$output>>
+        impl $crate::View<State = impl $crate::ViewMarker + $crate::State<$output>>
           $(+ $crate::Captures<$a>)*
     };
 }

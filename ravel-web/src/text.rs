@@ -8,14 +8,13 @@ use std::{
 use ravel::Builder;
 use web_sys::wasm_bindgen::UnwrapThrowExt;
 
-use crate::{BuildCx, RebuildCx, State, View, Web};
+use crate::{BuildCx, RebuildCx, State, ViewMarker, Web};
 
 /// A text node.
 pub struct Text<Value: ToString + AsRef<str>> {
     value: Value,
 }
 
-impl<Value: ToString + AsRef<str>> View for Text<Value> {}
 impl<Value: ToString + AsRef<str>> Builder<Web> for Text<Value> {
     type State = TextState<String>;
 
@@ -49,12 +48,13 @@ impl<Output, Value: 'static> State<Output> for TextState<Value> {
     fn run(&mut self, _: &mut Output) {}
 }
 
+impl<Value> ViewMarker for TextState<Value> {}
+
 /// A text node.
 pub fn text<V: ToString + AsRef<str>>(value: V) -> Text<V> {
     Text { value }
 }
 
-impl View for &'static str {}
 impl Builder<Web> for &'static str {
     type State = TextState<Self>;
 
@@ -79,7 +79,6 @@ pub struct Display<T: ToString + PartialEq + Clone> {
     value: T,
 }
 
-impl<T: 'static + ToString + PartialEq + Clone> View for Display<T> {}
 impl<T: 'static + ToString + PartialEq + Clone> Builder<Web> for Display<T> {
     type State = DisplayState<T>;
 
@@ -110,7 +109,6 @@ pub struct DisplayRef<'a, T: ToString + PartialEq + Clone> {
     value: &'a T,
 }
 
-impl<'a, T: 'static + ToString + PartialEq + Clone> View for DisplayRef<'a, T> {}
 impl<'a, T: 'static + ToString + PartialEq + Clone> Builder<Web>
     for DisplayRef<'a, T>
 {
@@ -150,6 +148,8 @@ impl<T: 'static + ToString + PartialEq, Output> State<Output>
     fn run(&mut self, _: &mut Output) {}
 }
 
+impl<T: ToString + PartialEq> ViewMarker for DisplayState<T> {}
+
 /// Displays a value, updating when not equal to the previous value.
 pub fn display<T: ToString + PartialEq + Clone>(value: T) -> Display<T> {
     Display { value }
@@ -162,7 +162,6 @@ pub fn display_ref<T: ToString + PartialEq + Clone>(
     DisplayRef { value }
 }
 
-impl<'a> View for Arguments<'a> {}
 impl<'a> Builder<Web> for Arguments<'a> {
     type State = TextState<Cow<'static, str>>;
 

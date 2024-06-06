@@ -2,10 +2,9 @@ use web_sys::wasm_bindgen::UnwrapThrowExt as _;
 
 use crate::{
     dom::{clear, Position},
-    BuildCx, Builder, RebuildCx, State, View, Web,
+    BuildCx, Builder, RebuildCx, State, View, ViewMarker, Web,
 };
 
-impl<V: View> View for Option<V> {}
 impl<V: View> Builder<Web> for Option<V> {
     type State = OptionState<V::State>;
 
@@ -57,3 +56,5 @@ where
         state.run(output)
     }
 }
+
+impl<S> ViewMarker for OptionState<S> {}

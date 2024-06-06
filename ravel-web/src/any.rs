@@ -4,7 +4,7 @@ use web_sys::wasm_bindgen::UnwrapThrowExt as _;
 
 use crate::{
     dom::{clear, Position},
-    BuildCx, Builder, RebuildCx, State, View, Web,
+    BuildCx, Builder, RebuildCx, State, View, ViewMarker, Web,
 };
 
 /// Trait for upcasting to [`Any`], implemented automatically.
@@ -26,10 +26,6 @@ pub struct AnyView<V: View, Output> {
     phantom: PhantomData<fn(&mut Output)>,
 }
 
-impl<V: View, Output: 'static> View for AnyView<V, Output> where
-    V::State: State<Output>
-{
-}
 impl<V: View, Output: 'static> Builder<Web> for AnyView<V, Output>
 where
     V::State: State<Output>,
@@ -79,6 +75,8 @@ impl<Output: 'static> State<Output> for AnyState<Output> {
         self.state.run(output)
     }
 }
+
+impl<Output> ViewMarker for AnyState<Output> {}
 
 /// Wraps a [`trait@View`], erasing its [`State`] type.
 ///

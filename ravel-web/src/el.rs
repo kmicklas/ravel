@@ -4,7 +4,9 @@ use std::marker::PhantomData;
 
 use web_sys::wasm_bindgen::{JsValue, UnwrapThrowExt};
 
-use crate::{dom::Position, BuildCx, Builder, RebuildCx, State, View, Web};
+use crate::{
+    dom::Position, BuildCx, Builder, RebuildCx, State, ViewMarker, Web,
+};
 
 /// Trait to identify element types.
 pub trait ElKind: 'static {
@@ -20,7 +22,6 @@ pub struct El<Kind: ElKind, Body> {
     body: Body,
 }
 
-impl<Kind: ElKind, Body: Builder<Web>> View for El<Kind, Body> {}
 impl<Kind: ElKind, Body: Builder<Web>> Builder<Web> for El<Kind, Body> {
     type State = ElState<Body::State>;
 
@@ -53,6 +54,8 @@ where
         self.body.run(output)
     }
 }
+
+impl<S> ViewMarker for ElState<S> {}
 
 /// An arbitrary element.
 pub fn el<Kind: ElKind, Body>(_: Kind, body: Body) -> El<Kind, Body> {
@@ -92,7 +95,6 @@ macro_rules! make_el {
         #[derive(Copy, Clone)]
         pub struct $t<Body>(pub Body);
 
-        impl<Body: Builder<Web>> View for $t<Body> {}
         impl<Body: Builder<Web>> Builder<Web> for $t<Body> {
             type State = ElState<Body::State>;
 
