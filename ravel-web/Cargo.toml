@@ -1,6 +1,6 @@
 [package]
 name = "ravel-web"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "An experimental approach to UI in Rust with a focus on ergonomics, efficiency, and simplicity."
 license = "MIT"

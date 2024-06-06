@@ -18,6 +18,6 @@ gloo-utils = "0.2.0"
 log = "0.4.21"
 paste = "1.0.15"
 ravel = { version = "0.1.0", path = "./ravel" }
-ravel-web = { version = "0.1.0", path = "./ravel-web" }
+ravel-web = { version = "0.2.0", path = "./ravel-web" }
 wasm-bindgen-futures = "0.4.42"
 web-sys = "0.3.69"
