@@ -1,7 +1,6 @@
 //! A web/DOM/HTML backend for [`ravel`].
 
-#![feature(trait_upcasting)]
-use std::{any::Any, sync::Arc};
+use std::sync::Arc;
 
 use atomic_waker::AtomicWaker;
 use dom::Position;
@@ -43,7 +42,7 @@ pub struct RebuildCx<'cx> {
 }
 
 /// Trait for the state of a [`Web`] component.
-pub trait State<Output>: Any {
+pub trait State<Output>: AsAny {
     /// Processes a "frame".
     ///
     /// This method can respond to externally triggered events by changing the
