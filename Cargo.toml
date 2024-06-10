@@ -19,5 +19,6 @@ log = "0.4.21"
 paste = "1.0.15"
 ravel = { version = "0.2.0", path = "./ravel" }
 ravel-web = { version = "0.3.0", path = "./ravel-web" }
+wasm-bindgen = "0.2.92"
 wasm-bindgen-futures = "0.4.42"
 web-sys = "0.3.69"

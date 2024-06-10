@@ -25,7 +25,7 @@ impl<Kind: ElKind, Body: Builder<Web>> Builder<Web> for El<Kind, Body> {
     type State = ElState<Body::State>;
 
     fn build(self, cx: BuildCx) -> Self::State {
-        build_el(cx, Kind::NAME, self.body)
+        build_el(cx, create_element(Kind::NAME), self.body)
     }
 
     fn rebuild(self, cx: RebuildCx, state: &mut Self::State) {
@@ -64,13 +64,15 @@ pub fn el<Kind: ElKind, Body>(_: Kind, body: Body) -> El<Kind, Body> {
     }
 }
 
+fn create_element(kind: &'static str) -> web_sys::Element {
+    gloo_utils::document().create_element(kind).unwrap_throw()
+}
+
 fn build_el<Body: Builder<Web>>(
     cx: BuildCx,
-    kind: &'static str,
+    el: web_sys::Element,
     body: Body,
 ) -> ElState<Body::State> {
-    let el = gloo_utils::document().create_element(kind).unwrap_throw();
-
     let state = body.build(BuildCx {
         position: Position {
             parent: &el,
@@ -88,7 +90,7 @@ fn build_el<Body: Builder<Web>>(
 }
 
 macro_rules! make_el {
-    ($name:ident, $t:ident) => {
+    ($name:ident, $t:ident, $create:expr) => {
         #[doc = concat!("`", stringify!($name), "` element.")]
         #[repr(transparent)]
         #[derive(Copy, Clone)]
@@ -98,7 +100,7 @@ macro_rules! make_el {
             type State = ElState<Body::State>;
 
             fn build(self, cx: BuildCx) -> Self::State {
-                build_el(cx, stringify!($name), self.0)
+                build_el(cx, $create, self.0)
             }
 
             fn rebuild(self, cx: RebuildCx, state: &mut Self::State) {
@@ -111,37 +113,7 @@ macro_rules! make_el {
                 )
             }
         }
-
-        #[doc = concat!("`", stringify!($name), "` element.")]
-        pub fn $name<Body>(body: Body) -> $t<Body> {
-            $t(body)
-        }
     };
 }
 
-make_el!(a, A);
-make_el!(b, B);
-make_el!(button, Button);
-make_el!(div, Div);
-make_el!(footer, Footer);
-make_el!(form, Form);
-make_el!(h1, H1);
-make_el!(h2, H2);
-make_el!(h3, H3);
-make_el!(h4, H4);
-make_el!(h5, H5);
-make_el!(h6, H6);
-make_el!(header, Header);
-make_el!(input, Input);
-make_el!(label, Label);
-make_el!(li, Li);
-make_el!(p, P);
-make_el!(section, Section);
-make_el!(span, Span);
-make_el!(strong, Strong);
-make_el!(table, Table);
-make_el!(tbody, TBody);
-make_el!(thead, THead);
-make_el!(td, Td);
-make_el!(tr, Tr);
-make_el!(ul, Ul);
+include!(concat!(env!("OUT_DIR"), "/el_gen.rs"));
