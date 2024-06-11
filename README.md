@@ -44,7 +44,7 @@ trunk serve examples/todomvc/index.html
 
 ### Features
 
-- [ ] Local state
+- [x] Local state
 - [ ] Memoization
 - [ ] `async` actions
 - [ ] Support "message"/"reducer" architecture rather than direct model mutation

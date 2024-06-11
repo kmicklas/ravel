@@ -8,8 +8,10 @@ use std::{marker::PhantomData, mem::MaybeUninit};
 use paste::paste;
 
 mod any;
+mod local;
 
 pub use any::*;
+pub use local::*;
 
 /// A dummy type which typically represents a "backend".
 pub trait CxRep {
