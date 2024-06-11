@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use ravel::with;
+use ravel::{with, with_local};
 use ravel_web::{
     any, attr,
     collections::{btree_map, slice},
@@ -17,6 +17,7 @@ use web_sys::{
 };
 
 /// Our model type contains the global state of the application.
+#[derive(Default)]
 struct Model {
     count: usize,
     message: String,
@@ -112,6 +113,39 @@ fn events() -> View!(Model) {
     )
 }
 
+/// Sometimes, we might not want to store all state in our global [`Model`].
+///
+/// This is useful when it would be tedious to write down uninteresting state
+/// types, or when you want to encapsulate the behavior of a reusable component.
+/// However, it generally increases complexity and makes testing harder.
+fn local_state() -> View!(Model) {
+    with_local(
+        // We provide an initialization callback, which is only run when the
+        // component is constructed for the first time.
+        || 0,
+        |cx, local_count| {
+            // Inside the body, we have a reference to the current local state.
+            cx.build((
+                el::h2("Local state"),
+                el::p(("Local count: ", display(*local_count))),
+                el::p(el::button((
+                    "Increment local count",
+                    // Although we have a reference to the current value, we
+                    // cannot mutate it, or store it in an event handler (which
+                    // must remain `'static`).
+                    //
+                    // Instead, [`with_local`] changes our state type to be a
+                    // tuple which has both the outer state ([`Model`]) and our
+                    // local state type.
+                    on_(event::Click, move |(_model, local_count): &mut _| {
+                        *local_count += 1;
+                    }),
+                ))),
+            ))
+        },
+    )
+}
+
 /// All of our views so far have had a static structure. Sometimes, we need to
 /// swap out or hide various components.
 fn dynamic_view(model: &Model) -> View!(Model, '_) {
@@ -198,6 +232,7 @@ fn tutorial(model: &Model) -> View!(Model, '_) {
         basic_html(),
         state(model),
         events(),
+        local_state(),
         dynamic_view(model),
         lists(model),
     )
