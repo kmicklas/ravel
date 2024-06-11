@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 use atomic_waker::AtomicWaker;
 use dom::Position;
-use ravel::{Builder, Cx, CxRep};
+use ravel::{Builder, Cx, CxRep, WithLocalState};
 
 mod any;
 pub mod attr;
@@ -43,6 +43,8 @@ pub struct RebuildCx<'cx> {
 
 /// A marker trait for the [`ravel::State`] types of a [`trait@View`].
 pub trait ViewMarker {}
+
+impl<T: 'static, S: ViewMarker> ViewMarker for WithLocalState<T, S> {}
 
 macro_rules! tuple_state {
     ($($a:ident),*) => {

@@ -2,7 +2,7 @@
 
 use std::marker::PhantomData;
 
-use ravel::{Builder, State};
+use ravel::{Builder, Float, State};
 use web_sys::wasm_bindgen::UnwrapThrowExt as _;
 
 use crate::{BuildCx, RebuildCx, Web};
@@ -63,7 +63,7 @@ impl AttrState {
 }
 
 impl<Output> State<Output> for AttrState {
-    fn run(&mut self, _: &mut Output) {}
+    fn run(&mut self, _: &mut Float<Output>) {}
 }
 
 /// An arbitrary attribute.
@@ -198,7 +198,7 @@ pub struct AttrClassState<Value> {
 }
 
 impl<Value: 'static, Output> State<Output> for AttrClassState<Value> {
-    fn run(&mut self, _: &mut Output) {}
+    fn run(&mut self, _: &mut Float<Output>) {}
 }
 
 /// `class` attribute.
@@ -254,7 +254,7 @@ impl BooleanAttrState {
 }
 
 impl<Output> State<Output> for BooleanAttrState {
-    fn run(&mut self, _: &mut Output) {}
+    fn run(&mut self, _: &mut Float<Output>) {}
 }
 
 /// An arbitrary boolean attribute.

@@ -1,4 +1,4 @@
-use ravel::State;
+use ravel::{Float, State};
 use web_sys::wasm_bindgen::UnwrapThrowExt as _;
 
 use crate::{
@@ -52,7 +52,7 @@ impl<S, Output> State<Output> for OptionState<S>
 where
     S: State<Output>,
 {
-    fn run(&mut self, output: &mut Output) {
+    fn run(&mut self, output: &mut Float<Output>) {
         let Some(state) = &mut self.state else { return };
         state.run(output)
     }

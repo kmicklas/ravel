@@ -2,7 +2,7 @@
 
 use std::{cell::RefCell, marker::PhantomData, ops::DerefMut, rc::Rc};
 
-use ravel::State;
+use ravel::{Float, State};
 use web_sys::wasm_bindgen::JsValue;
 
 use crate::{BuildCx, Builder, RebuildCx, Web};
@@ -76,10 +76,10 @@ pub struct OnState<Action> {
 impl<Action: 'static + FnMut(&mut Output, web_sys::Event), Output: 'static>
     State<Output> for OnState<Action>
 {
-    fn run(&mut self, output: &mut Output) {
+    fn run(&mut self, output: &mut Float<Output>) {
         let event = self.event.take();
         if !event.is_null() {
-            (self.action)(output, event);
+            (self.action)(output.as_mut().unwrap(), event);
         }
     }
 }

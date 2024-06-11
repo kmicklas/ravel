@@ -2,7 +2,7 @@
 
 use std::marker::PhantomData;
 
-use ravel::State;
+use ravel::{Float, State};
 use web_sys::wasm_bindgen::{JsValue, UnwrapThrowExt};
 
 use crate::{dom::Position, BuildCx, Builder, RebuildCx, ViewMarker, Web};
@@ -49,7 +49,7 @@ impl<Output, S> State<Output> for ElState<S>
 where
     S: State<Output>,
 {
-    fn run(&mut self, output: &mut Output) {
+    fn run(&mut self, output: &mut Float<Output>) {
         self.body.run(output)
     }
 }

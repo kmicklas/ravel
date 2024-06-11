@@ -2,7 +2,7 @@ use std::{
     cmp::Ordering, collections::BTreeMap, marker::PhantomData, ops::Bound,
 };
 
-use ravel::{with, State, Token};
+use ravel::{with, Float, State, Token};
 use web_sys::wasm_bindgen::UnwrapThrowExt;
 
 use crate::{
@@ -128,7 +128,7 @@ impl<K: 'static + Ord, S, Output> State<Output> for BTreeMapState<K, S>
 where
     S: State<Output>,
 {
-    fn run(&mut self, output: &mut Output) {
+    fn run(&mut self, output: &mut Float<Output>) {
         for entry in self.data.values_mut() {
             entry.state.run(output);
         }

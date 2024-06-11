@@ -8,8 +8,12 @@ use std::{marker::PhantomData, mem::MaybeUninit};
 use paste::paste;
 
 mod any;
+mod float;
+mod local;
 
 pub use any::*;
+pub use float::*;
+pub use local::*;
 
 /// A dummy type which typically represents a "backend".
 pub trait CxRep {
@@ -64,7 +68,7 @@ pub trait State<Output>: AsAny {
     ///
     /// This method can respond to externally triggered events by changing the
     /// `Output`.
-    fn run(&mut self, output: &mut Output);
+    fn run(&mut self, output: &mut Float<Output>);
 }
 
 macro_rules! tuple_state {
@@ -74,7 +78,7 @@ macro_rules! tuple_state {
         where
             $($a: State<O>,)*
         {
-            fn run(&mut self, _output: &mut O) {
+            fn run(&mut self, _output: &mut Float<O>) {
                 let ($($a,)*) = self;
                 $($a.run(_output);)*
             }

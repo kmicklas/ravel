@@ -1,6 +1,6 @@
 use std::{cmp::Ordering, marker::PhantomData};
 
-use ravel::{with, State, Token};
+use ravel::{with, Float, State, Token};
 use web_sys::wasm_bindgen::UnwrapThrowExt;
 
 use crate::{
@@ -96,7 +96,7 @@ impl<S, Output> State<Output> for SliceState<S>
 where
     S: State<Output>,
 {
-    fn run(&mut self, output: &mut Output) {
+    fn run(&mut self, output: &mut Float<Output>) {
         for entry in self.data.iter_mut() {
             entry.state.run(output);
         }

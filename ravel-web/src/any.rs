@@ -1,6 +1,6 @@
 use std::{any::Any, marker::PhantomData, ops::DerefMut};
 
-use ravel::State;
+use ravel::{Float, State};
 use web_sys::wasm_bindgen::UnwrapThrowExt as _;
 
 use crate::{
@@ -59,7 +59,7 @@ pub struct AnyState<Output> {
 }
 
 impl<Output: 'static> State<Output> for AnyState<Output> {
-    fn run(&mut self, output: &mut Output) {
+    fn run(&mut self, output: &mut Float<Output>) {
         self.state.run(output)
     }
 }

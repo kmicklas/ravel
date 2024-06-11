@@ -2,7 +2,7 @@
 use std::sync::Arc;
 
 use atomic_waker::AtomicWaker;
-use ravel::{with, Builder, State, Token};
+use ravel::{with, Builder, Float, State, Token};
 use web_sys::wasm_bindgen::JsValue;
 
 use crate::{dom::Position, BuildCx, Cx, RebuildCx, Web};
@@ -23,7 +23,7 @@ use crate::{dom::Position, BuildCx, Cx, RebuildCx, Web};
 /// 1. `sync` the `Data` (for example, write updates to an external data store).
 pub async fn run<Data, Sync, Render, S, R>(
     parent: &web_sys::Element,
-    data: &mut Data,
+    data: &mut Float<Data>,
     mut sync: Sync,
     mut render: Render,
 ) -> R
@@ -35,23 +35,24 @@ where
     let waker = &Arc::new(AtomicWaker::new());
     waker.register(&futures_micro::waker().await);
 
-    let mut state = with(|cx| render(cx, data)).build(BuildCx {
-        position: Position {
-            parent,
-            insert_before: &JsValue::NULL.into(),
-            waker,
-        },
-    });
+    let mut state =
+        with(|cx| render(cx, data.as_ref().unwrap())).build(BuildCx {
+            position: Position {
+                parent,
+                insert_before: &JsValue::NULL.into(),
+                waker,
+            },
+        });
 
     loop {
         futures_micro::sleep().await;
 
         state.run(data);
-        if let Some(result) = sync(data) {
+        if let Some(result) = sync(data.as_mut().unwrap()) {
             return result;
         }
 
-        with(|cx| render(cx, data))
+        with(|cx| render(cx, data.as_ref().unwrap()))
             .rebuild(RebuildCx { parent, waker }, &mut state);
 
         waker.register(&futures_micro::waker().await);
@@ -64,7 +65,7 @@ where
 /// This is a convenience wrapper around [`run`], to run a complete application,
 /// which will never abort.
 pub fn spawn_body<Data: 'static, Sync, Render, S>(
-    mut data: Data,
+    data: Data,
     mut sync: Sync,
     render: Render,
 ) where
@@ -74,6 +75,7 @@ pub fn spawn_body<Data: 'static, Sync, Render, S>(
 {
     let body = gloo_utils::body();
     wasm_bindgen_futures::spawn_local(async move {
+        let mut data = Float::new(data);
         run(
             &body,
             &mut data,

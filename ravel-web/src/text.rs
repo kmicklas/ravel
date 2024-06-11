@@ -5,7 +5,7 @@ use std::{
     fmt::{Arguments, Write},
 };
 
-use ravel::{Builder, State};
+use ravel::{Builder, Float, State};
 use web_sys::wasm_bindgen::UnwrapThrowExt;
 
 use crate::{BuildCx, RebuildCx, ViewMarker, Web};
@@ -45,7 +45,7 @@ pub struct TextState<Value> {
 }
 
 impl<Output, Value: 'static> State<Output> for TextState<Value> {
-    fn run(&mut self, _: &mut Output) {}
+    fn run(&mut self, _: &mut Float<Output>) {}
 }
 
 impl<Value> ViewMarker for TextState<Value> {}
@@ -145,7 +145,7 @@ pub struct DisplayState<T: ToString + PartialEq> {
 impl<T: 'static + ToString + PartialEq, Output> State<Output>
     for DisplayState<T>
 {
-    fn run(&mut self, _: &mut Output) {}
+    fn run(&mut self, _: &mut Float<Output>) {}
 }
 
 impl<T: ToString + PartialEq> ViewMarker for DisplayState<T> {}
