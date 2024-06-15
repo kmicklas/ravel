@@ -98,12 +98,12 @@ impl<'cx, 'state, State, R: CxRep> Cx<'cx, 'state, State, R> {
 }
 
 /// A [`Builder`] created from [`with`].
-pub struct WithCx<F, State, R> {
+pub struct With<F, State> {
     f: F,
-    phantom: PhantomData<(State, R)>,
+    phantom: PhantomData<State>,
 }
 
-impl<F, State, R: CxRep> Builder<R> for WithCx<F, State, R>
+impl<F, State, R: CxRep> Builder<R> for With<F, State>
 where
     F: FnOnce(Cx<State, R>) -> Token<State>,
 {
@@ -132,11 +132,11 @@ where
 /// Creates a [`Builder`] from a callback which uses [`Cx::build`]. The
 /// [`Builder`] passed with [`Cx::build`] can borrow local data in the callback,
 /// without that lifetime being captured in the result.
-pub fn with<F, State, R: CxRep>(f: F) -> WithCx<F, State, R>
+pub fn with<F, State, R: CxRep>(f: F) -> With<F, State>
 where
     F: FnOnce(Cx<State, R>) -> Token<State>,
 {
-    WithCx {
+    With {
         f,
         phantom: PhantomData,
     }
