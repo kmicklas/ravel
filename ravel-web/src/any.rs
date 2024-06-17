@@ -1,10 +1,11 @@
 use std::{any::Any, marker::PhantomData, ops::DerefMut};
 
+use ravel::State;
 use web_sys::wasm_bindgen::UnwrapThrowExt as _;
 
 use crate::{
     dom::{clear, Position},
-    BuildCx, Builder, RebuildCx, State, View, ViewMarker, Web,
+    BuildCx, Builder, RebuildCx, View, ViewMarker, Web,
 };
 
 /// Trait for upcasting to [`Any`], implemented automatically.

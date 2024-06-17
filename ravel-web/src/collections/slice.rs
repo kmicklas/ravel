@@ -1,11 +1,11 @@
 use std::{cmp::Ordering, marker::PhantomData};
 
-use ravel::{with, Token};
+use ravel::{with, State, Token};
 use web_sys::wasm_bindgen::UnwrapThrowExt;
 
 use crate::{
     dom::{clear, Position},
-    BuildCx, Builder, Cx, RebuildCx, State, Web,
+    BuildCx, Builder, Cx, RebuildCx, Web,
 };
 
 pub struct SliceBuilder<'data, T, RenderItem, S> {

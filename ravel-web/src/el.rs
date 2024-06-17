@@ -2,11 +2,10 @@
 
 use std::marker::PhantomData;
 
+use ravel::State;
 use web_sys::wasm_bindgen::{JsValue, UnwrapThrowExt};
 
-use crate::{
-    dom::Position, BuildCx, Builder, RebuildCx, State, ViewMarker, Web,
-};
+use crate::{dom::Position, BuildCx, Builder, RebuildCx, ViewMarker, Web};
 
 /// Trait to identify element types.
 pub trait ElKind: 'static {

@@ -5,10 +5,10 @@ use std::{
     fmt::{Arguments, Write},
 };
 
-use ravel::Builder;
+use ravel::{Builder, State};
 use web_sys::wasm_bindgen::UnwrapThrowExt;
 
-use crate::{BuildCx, RebuildCx, State, ViewMarker, Web};
+use crate::{BuildCx, RebuildCx, ViewMarker, Web};
 
 /// A text node.
 pub struct Text<Value: ToString + AsRef<str>> {

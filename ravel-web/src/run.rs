@@ -2,10 +2,10 @@
 use std::sync::Arc;
 
 use atomic_waker::AtomicWaker;
-use ravel::{with, Builder, Token};
+use ravel::{with, Builder, State, Token};
 use web_sys::wasm_bindgen::JsValue;
 
-use crate::{dom::Position, BuildCx, Cx, RebuildCx, State, Web};
+use crate::{dom::Position, BuildCx, Cx, RebuildCx, Web};
 
 /// Runs a component on an arbitrary [`web_sys::Element`].
 ///

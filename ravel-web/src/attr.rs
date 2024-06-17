@@ -2,10 +2,10 @@
 
 use std::marker::PhantomData;
 
-use ravel::Builder;
+use ravel::{Builder, State};
 use web_sys::wasm_bindgen::UnwrapThrowExt as _;
 
-use crate::{BuildCx, RebuildCx, State, Web};
+use crate::{BuildCx, RebuildCx, Web};
 
 /// Trait to identify attribute types.
 pub trait AttrKind: 'static {

@@ -7,6 +7,10 @@ use std::{marker::PhantomData, mem::MaybeUninit};
 
 use paste::paste;
 
+mod any;
+
+pub use any::*;
+
 /// A dummy type which typically represents a "backend".
 pub trait CxRep {
     type BuildCx<'a>: Copy;
@@ -53,6 +57,40 @@ tuple_builder!(a, b, c, d, e);
 tuple_builder!(a, b, c, d, e, f);
 tuple_builder!(a, b, c, d, e, f, g);
 tuple_builder!(a, b, c, d, e, f, g, h);
+
+/// Trait for the state of a [`Builder`].
+pub trait State<Output>: AsAny {
+    /// Processes a "frame".
+    ///
+    /// This method can respond to externally triggered events by changing the
+    /// `Output`.
+    fn run(&mut self, output: &mut Output);
+}
+
+macro_rules! tuple_state {
+    ($($a:ident),*) => {
+        #[allow(non_camel_case_types)]
+        impl<$($a,)* O> State<O> for ($($a,)*)
+        where
+            $($a: State<O>,)*
+        {
+            fn run(&mut self, _output: &mut O) {
+                let ($($a,)*) = self;
+                $($a.run(_output);)*
+            }
+        }
+    };
+}
+
+tuple_state!();
+tuple_state!(a);
+tuple_state!(a, b);
+tuple_state!(a, b, c);
+tuple_state!(a, b, c, d);
+tuple_state!(a, b, c, d, e);
+tuple_state!(a, b, c, d, e, f);
+tuple_state!(a, b, c, d, e, f, g);
+tuple_state!(a, b, c, d, e, f, g, h);
 
 /// Context provided by [`with`].
 pub struct Cx<'cx, 'state, State, R: CxRep> {

@@ -41,31 +41,11 @@ pub struct RebuildCx<'cx> {
     waker: &'cx Arc<AtomicWaker>,
 }
 
-/// Trait for the state of a [`Web`] component.
-pub trait State<Output>: AsAny {
-    /// Processes a "frame".
-    ///
-    /// This method can respond to externally triggered events by changing the
-    /// `Output`.
-    fn run(&mut self, output: &mut Output);
-}
-
-/// A marker trait for the [`State`] types of a [`trait@View`].
+/// A marker trait for the [`ravel::State`] types of a [`trait@View`].
 pub trait ViewMarker {}
 
 macro_rules! tuple_state {
     ($($a:ident),*) => {
-        #[allow(non_camel_case_types)]
-        impl<$($a,)* O> State<O> for ($($a,)*)
-        where
-            $($a: State<O>,)*
-        {
-            fn run(&mut self, _output: &mut O) {
-                let ($($a,)*) = self;
-                $($a.run(_output);)*
-            }
-        }
-
         #[allow(non_camel_case_types)]
         impl<$($a),*> ViewMarker for ($($a,)*)
         where
@@ -109,6 +89,9 @@ where
 pub trait Captures<'a> {}
 impl<'a, T: ?Sized> Captures<'a> for T {}
 
+#[doc(hidden)]
+pub use ravel::State as ViewState;
+
 /// A convenience macro for declaring a [`trait@View`] type.
 ///
 /// The first parameter is the `Output` type of the [`trait@View`]'s
@@ -117,7 +100,7 @@ impl<'a, T: ?Sized> Captures<'a> for T {}
 macro_rules! View {
     ($output:ty $(, $a:lifetime)*) => {
         impl $crate::View<
-            ViewState = impl $crate::ViewMarker + $crate::State<$output>
+            ViewState = impl $crate::ViewMarker + $crate::ViewState<$output>
         > $(+ $crate::Captures<$a>)*
     };
 }

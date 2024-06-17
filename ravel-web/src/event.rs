@@ -2,9 +2,10 @@
 
 use std::{cell::RefCell, marker::PhantomData, ops::DerefMut, rc::Rc};
 
+use ravel::State;
 use web_sys::wasm_bindgen::JsValue;
 
-use crate::{BuildCx, Builder, RebuildCx, State, Web};
+use crate::{BuildCx, Builder, RebuildCx, Web};
 
 /// Trait to identify event types.
 pub trait EventKind: 'static {
