@@ -116,7 +116,8 @@ impl<'a, T: ?Sized> Captures<'a> for T {}
 #[macro_export]
 macro_rules! View {
     ($output:ty $(, $a:lifetime)*) => {
-        impl $crate::View<State = impl $crate::ViewMarker + $crate::State<$output>>
-          $(+ $crate::Captures<$a>)*
+        impl $crate::View<
+            ViewState = impl $crate::ViewMarker + $crate::State<$output>
+        > $(+ $crate::Captures<$a>)*
     };
 }
