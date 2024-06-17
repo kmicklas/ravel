@@ -8,19 +8,6 @@ use crate::{
     BuildCx, Builder, RebuildCx, View, ViewMarker, Web,
 };
 
-/// Trait for upcasting to [`Any`], implemented automatically.
-///
-/// This is a workaround until `trait_upcasting` is stabilized.
-pub trait AsAny: Any {
-    fn as_mut_dyn_any(&mut self) -> &mut dyn Any;
-}
-
-impl<T: Any> AsAny for T {
-    fn as_mut_dyn_any(&mut self) -> &mut dyn Any {
-        self
-    }
-}
-
 /// A wrapper around a [`trait@View`], erasing its [`State`] type.
 pub struct AnyView<V: View, Output> {
     inner: V,
