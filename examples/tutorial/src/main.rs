@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use ravel::{with, with_local};
+use ravel::{adapt_ref, with, with_local};
 use ravel_web::{
     any, attr,
     collections::{btree_map, slice},
@@ -123,11 +123,22 @@ fn local_state() -> View!(Model) {
         // We provide an initialization callback, which is only run when the
         // component is constructed for the first time.
         || 0,
+        // Inside the body, we have a reference to the current local state.
+        // Because we now have access to both the global and local state types
+        // we need to produce a `View!((Model, usize))`.
         |cx, local_count| {
-            // Inside the body, we have a reference to the current local state.
+            /// Displays the value. Since this returns `View!(Model)` (like any
+            /// other component in our application), we can no longer call it
+            /// directly here.
+            fn display_counter(count: usize) -> View!(Model) {
+                el::p(("Local count: ", display(count)))
+            }
+
             cx.build((
                 el::h2("Local state"),
-                el::p(("Local count: ", display(*local_count))),
+                // To use [`display_counter`], we need to "adapt" it to the
+                // correct type.
+                adapt_ref(display_counter(*local_count), |(model, _)| model),
                 el::p(el::button((
                     "Increment local count",
                     // Although we have a reference to the current value, we
