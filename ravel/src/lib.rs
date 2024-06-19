@@ -7,9 +7,11 @@ use std::{marker::PhantomData, mem::MaybeUninit};
 
 use paste::paste;
 
+mod adapt;
 mod any;
 mod local;
 
+pub use adapt::*;
 pub use any::*;
 pub use local::*;
 
