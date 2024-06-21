@@ -100,7 +100,7 @@ fn events() -> View!(Model) {
             "Message: ",
             // [`on`], unlike [`on_`], also gives us access to the underlying
             // [`web_sys::Event`].
-            el::input(on(event::InputEvent, |model: &mut Model, event| {
+            el::input(on(event::InputEvent, |model: &mut _, event| {
                 model.message = event
                     .target()
                     .unwrap_throw()

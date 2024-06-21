@@ -30,13 +30,15 @@ impl<K: EventKind> EventKind for Active<K> {
 }
 
 /// An event handler.
-pub struct On<Kind: EventKind, Action> {
+pub struct On<Kind: EventKind, Action, Output> {
     action: Action,
-    kind: PhantomData<Kind>,
+    kind: PhantomData<(Kind, Output)>,
 }
 
-impl<Kind: EventKind, Action: 'static> Builder<Web> for On<Kind, Action> {
-    type State = OnState<Action>;
+impl<Kind: EventKind, Action: 'static, Output> Builder<Web>
+    for On<Kind, Action, Output>
+{
+    type State = OnState<Action, Output>;
 
     fn build(self, cx: BuildCx) -> Self::State {
         let waker = cx.position.waker.clone();
@@ -58,6 +60,7 @@ impl<Kind: EventKind, Action: 'static> Builder<Web> for On<Kind, Action> {
                 },
             ),
             action: self.action,
+            phantom: PhantomData,
         }
     }
 
@@ -67,14 +70,15 @@ impl<Kind: EventKind, Action: 'static> Builder<Web> for On<Kind, Action> {
 }
 
 /// The state of an [`On`].
-pub struct OnState<Action> {
+pub struct OnState<Action, Output> {
     event: EventCell,
     _handle: gloo_events::EventListener,
     action: Action,
+    phantom: PhantomData<Output>,
 }
 
 impl<Action: 'static + FnMut(&mut Output, web_sys::Event), Output: 'static>
-    State<Output> for OnState<Action>
+    State<Output> for OnState<Action, Output>
 {
     fn run(&mut self, output: &mut Output) {
         let event = self.event.take();
@@ -92,7 +96,7 @@ pub fn on<
 >(
     _: Kind,
     action: Action,
-) -> On<Kind, Action> {
+) -> On<Kind, Action, Output> {
     On {
         action,
         kind: PhantomData,
@@ -107,9 +111,9 @@ pub fn on_<
 >(
     _: Kind,
     mut action: Action,
-) -> On<Kind, impl 'static + FnMut(&mut Output, web_sys::Event)> {
+) -> On<Kind, impl 'static + FnMut(&mut Output, web_sys::Event), Output> {
     On {
-        action: move |o: &mut _, _: _| action(o),
+        action: move |o: &mut _, _| action(o),
         kind: PhantomData,
     }
 }
