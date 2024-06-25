@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, marker::PhantomData};
+use std::{iter::once, marker::PhantomData};
 
 use ravel::{with, State, Token};
 use web_sys::wasm_bindgen::UnwrapThrowExt;
@@ -8,23 +8,22 @@ use crate::{
     BuildCx, Builder, Cx, RebuildCx, Web,
 };
 
-pub struct SliceBuilder<'data, T, RenderItem, S> {
-    data: &'data [T],
+pub struct IterBuilder<I, RenderItem, S> {
+    iter: I,
     render_item: RenderItem,
     phantom: PhantomData<S>,
 }
 
-impl<'data, T, RenderItem, S: 'static> Builder<Web>
-    for SliceBuilder<'data, T, RenderItem, S>
+impl<I: Iterator, RenderItem, S: 'static> Builder<Web>
+    for IterBuilder<I, RenderItem, S>
 where
-    RenderItem: Fn(Cx<S, Web>, usize, &T) -> Token<S>,
+    RenderItem: Fn(Cx<S, Web>, usize, I::Item) -> Token<S>,
 {
-    type State = SliceState<S>;
+    type State = IterState<S>;
 
     fn build(self, cx: BuildCx) -> Self::State {
         let data = self
-            .data
-            .iter()
+            .iter
             .enumerate()
             .map(|(i, v)| {
                 let header =
@@ -41,22 +40,22 @@ where
         let footer = web_sys::Comment::new_with_data("|").unwrap_throw();
         cx.position.insert(&footer);
 
-        SliceState { data, footer }
+        IterState { data, footer }
     }
 
-    fn rebuild(self, cx: RebuildCx, state: &mut Self::State) {
-        for (i, (v, entry)) in
-            self.data.iter().zip(state.data.iter_mut()).enumerate()
-        {
-            with(|cx| (self.render_item)(cx, i, v))
-                .rebuild(cx, &mut entry.state)
-        }
+    fn rebuild(mut self, cx: RebuildCx, state: &mut Self::State) {
+        let mut data = state.data.iter_mut();
 
-        match self.data.len().cmp(&state.data.len()) {
-            Ordering::Equal => {}
-            Ordering::Greater => state.data.extend(
-                self.data.iter().enumerate().skip(state.data.len()).map(
-                    |(i, v)| {
+        for i in 0.. {
+            match (self.iter.next(), data.next()) {
+                (None, None) => break,
+                (None, Some(entry)) => {
+                    clear(cx.parent, &entry.header, &state.footer);
+                    state.data.truncate(i);
+                    break;
+                }
+                (Some(v), None) => {
+                    state.data.extend(once(v).chain(self.iter).map(|v| {
                         let position = Position {
                             parent: cx.parent,
                             insert_before: &state.footer,
@@ -72,27 +71,24 @@ where
                             state: with(|cx| (self.render_item)(cx, i, v))
                                 .build(BuildCx { position }),
                         }
-                    },
-                ),
-            ),
-            Ordering::Less => {
-                clear(
-                    cx.parent,
-                    &state.data[self.data.len()].header,
-                    &state.footer,
-                );
-                state.data.truncate(self.data.len());
+                    }));
+                    break;
+                }
+                (Some(v), Some(entry)) => {
+                    with(|cx| (self.render_item)(cx, i, v))
+                        .rebuild(cx, &mut entry.state)
+                }
             }
         }
     }
 }
 
-pub struct SliceState<S> {
+pub struct IterState<S> {
     data: Vec<Entry<S>>,
     footer: web_sys::Comment,
 }
 
-impl<S, Output> State<Output> for SliceState<S>
+impl<S, Output> State<Output> for IterState<S>
 where
     S: State<Output>,
 {
@@ -108,16 +104,16 @@ struct Entry<S> {
     state: S,
 }
 
-pub fn slice<T, RenderItem, S>(
-    data: &[T],
+pub fn iter<I: IntoIterator, RenderItem, S>(
+    iter: I,
     render_item: RenderItem,
-) -> SliceBuilder<T, RenderItem, S>
+) -> IterBuilder<I::IntoIter, RenderItem, S>
 where
-    RenderItem: Fn(Cx<S, Web>, usize, &T) -> Token<S>,
+    RenderItem: Fn(Cx<S, Web>, usize, I::Item) -> Token<S>,
 {
-    SliceBuilder {
+    IterBuilder {
         render_item,
-        data,
+        iter: iter.into_iter(),
         phantom: PhantomData,
     }
 }

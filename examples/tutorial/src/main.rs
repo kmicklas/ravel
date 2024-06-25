@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use ravel::{adapt_ref, with, with_local};
 use ravel_web::{
     any, attr,
-    collections::{btree_map, slice},
+    collections::{btree_map, iter},
     el,
     event::{self, on, on_},
     format_text,
@@ -193,7 +193,7 @@ fn dynamic_view(model: &Model) -> View!(Model, '_) {
 /// at any position.
 ///
 /// If the data is just an array which grows or shrinks at the end, we can use
-/// [`slice()`] to generate a [`trait@View`] over a [`Vec`]/slice.
+/// [`iter()`] to generate a [`trait@View`] over any iterator.
 fn lists(model: &Model) -> View!(Model, '_) {
     (
         el::h2("Map view"),
@@ -215,10 +215,10 @@ fn lists(model: &Model) -> View!(Model, '_) {
                 )))
             })),
         ))),
-        el::h2("Slice view"),
+        el::h2("Iterator view"),
         el::p(el::table((
             el::thead(el::tr((el::td(()), el::td("Id"), el::td("Message")))),
-            el::tbody(slice(&model.item_vec, |cx, i, (key, value)| {
+            el::tbody(iter(&model.item_vec, |cx, i, (key, value)| {
                 let key = *key;
                 cx.build(el::tr((
                     el::td(el::button((
