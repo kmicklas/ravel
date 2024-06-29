@@ -1,4 +1,6 @@
-//! HTML elements.
+//! HTML element types.
+//!
+//! Usually you shouldn't need to import or reference these directly.
 
 use std::marker::PhantomData;
 
@@ -17,8 +19,8 @@ pub trait ElKind: 'static {
 #[repr(transparent)]
 #[derive(Copy, Clone)]
 pub struct El<Kind: ElKind, Body> {
-    kind: PhantomData<Kind>,
-    body: Body,
+    pub(crate) kind: PhantomData<Kind>,
+    pub(crate) body: Body,
 }
 
 impl<Kind: ElKind, Body: Builder<Web>> Builder<Web> for El<Kind, Body> {
@@ -55,14 +57,6 @@ where
 }
 
 impl<S> ViewMarker for ElState<S> {}
-
-/// An arbitrary element.
-pub fn el<Kind: ElKind, Body>(_: Kind, body: Body) -> El<Kind, Body> {
-    El {
-        kind: PhantomData,
-        body,
-    }
-}
 
 fn create_element(kind: &'static str) -> web_sys::Element {
     gloo_utils::document().create_element(kind).unwrap_throw()
@@ -122,4 +116,4 @@ macro_rules! make_el {
     };
 }
 
-include!(concat!(env!("OUT_DIR"), "/el_gen.rs"));
+include!(concat!(env!("OUT_DIR"), "/gen_el_types.rs"));
