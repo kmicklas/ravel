@@ -91,7 +91,13 @@ fn build_el<Body: Builder<Web>>(
 
 macro_rules! make_el {
     ($name:ident, $t:ident, $create:expr) => {
-        #[doc = concat!("`", stringify!($name), "` element.")]
+        #[doc = concat!(
+            "[`<",
+            stringify!($name),
+            ">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/",
+            stringify!($name),
+            ") element.",
+        )]
         #[repr(transparent)]
         #[derive(Copy, Clone)]
         pub struct $t<Body>(pub Body);
