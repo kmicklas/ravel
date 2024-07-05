@@ -64,5 +64,5 @@ trunk serve examples/todomvc/index.html
 
 - [ ] Tests
 - [ ] Benchmarks
-  - [ ] [js-framework-benchmark](https://github.com/krausest/js-framework-benchmark)
+  - [x] [js-framework-benchmark](https://github.com/krausest/js-framework-benchmark)
   - [ ] [Performance API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) integration
