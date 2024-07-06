@@ -2,7 +2,7 @@
 
 use std::marker::PhantomData;
 
-use self::types::{El, ElKind};
+use self::types::*;
 
 pub mod types;
 

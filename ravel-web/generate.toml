@@ -135,3 +135,18 @@ summary = {}
 # Web Components
 slot = {}
 template = {}
+
+[attribute]
+aria-hidden = {}
+autofocus = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+checked = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+class = { value_trait = "ClassValue", value_wrapper = "Classes" }
+for = { build = "for_" }
+href = {}
+id = {}
+max = {}
+min = {}
+placeholder = {}
+style = {}
+type = { build = "type_" }
+value = { build = "value_" } # TODO: do we really need this rename?

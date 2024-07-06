@@ -100,7 +100,7 @@ fn item(filter: Filter, id: usize, item: &Item) -> View!(Model, '_) {
                 )),
             )),
             form((
-                input((class("edit"), value_(&item.text))),
+                input((class("edit"), value_(CloneString(&item.text)))),
                 on(Active(Submit), move |model: &mut Model, e| {
                     e.prevent_default();
 
