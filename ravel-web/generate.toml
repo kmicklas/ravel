@@ -137,6 +137,10 @@ slot = {}
 template = {}
 
 [attribute]
+# Copied from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes.
+# Unlike elements, no grep. However, the following Google Sheets formula helped
+# extract the list of attribute names:
+#   =ImportHtml("https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes", "table")
 accept = {}
 accept-charset = {}
 accesskey = {}
