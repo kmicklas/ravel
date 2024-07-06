@@ -137,16 +137,118 @@ slot = {}
 template = {}
 
 [attribute]
-aria-hidden = {}
+accept = {}
+accept-charset = {}
+accesskey = {}
+action = {}
+allow = {}
+alt = {}
+aria-hidden = {} # TODO: enum
+as = { build = "as_" } # TODO: enum
+async = { build = "async_", value_type = "bool", value_wrapper = "BooleanAttrValue" }
+autocapitalize = {} # TODO: enum
+autocomplete = {} # TODO: space-separated, enum?
 autofocus = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+autoplay = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+capture = {} # TODO: enum
+# charset = {}
 checked = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+cite = { build = "cite" }
 class = { value_trait = "ClassValue", value_wrapper = "Classes" }
+cols = {} # TODO: usize
+colspan = {} # TODO: usize
+# content = {}
+contenteditable = {} # TODO: enum
+controls = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+coords = {} # TODO: custom type
+crossorigin = {} # TODO: enum
+csp = {}
+data = { build = "data" }
+datetime = {} # TODO: custom type
+decoding = {} # TODO: enum
+default = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+defer = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+dir = {} # TODO: enum
+dirname = {} # TODO: enum
+disabled = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+download = {}
+draggable = {} # TODO: bool enum!
+enctype = {} # TODO: enum
+enterkeyhint = {}
 for = { build = "for_" }
+form = { build = "form" }
+formaction = {}
+formenctype = {} # TODO: enum
+formmethod = {} # TODO: enum
+formnovalidate = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+formtarget = {}
+headers = {}
+height = {} # TODO: usize
+hidden = {} # TODO: enum
+high = {} # TODO: number
 href = {}
+hreflang = {}
+# http-equiv = {}
 id = {}
-max = {}
-min = {}
+inputmode = {} # TODO: enum
+integrity = {}
+ismap = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+itemprop = {}
+kind = {} # TODO: enum
+label = { build = "label" }
+lang = {}
+list = {}
+loading = {} # TODO: enum
+loop = { build = "loop_", value_type = "bool", value_wrapper = "BooleanAttrValue" }
+low = {} # TODO: number
+max = {} # TODO: number
+maxlength = {} # TODO: usize
+minlength = {} # TODO: usize
+media = {}
+method = {} # TODO: enum
+min = {} # TODO: number
+multiple = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+muted = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+name = {}
+novalidate = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+open = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+optimum = {} # TODO: number
+pattern = {}
+ping = {}
 placeholder = {}
+playsinline = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+poster = {}
+preload = {} # TODO: enum
+readonly = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+referrerpolicy = {} # TODO: enum
+rel = {} # TODO: enum?
+required = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+reversed = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+role = {} # TODO: enum?
+rows = {} # TODO: usize
+rowspan = {} # TODO: usize
+sandbox = {} # TODO: enum?
+scope = {} # TODO: enum
+selected = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+shape = {} # TODO: enum
+size = {} # TODO: usize
+sizes = {}
+slot = { build = "slot" }
+span = { build = "span" }
+spellcheck = {} # TODO: bool enum!
+src = {}
+srcdoc = {}
+srclang = {}
+srcset = {}
+start = {} # TODO: isize
+step = {} # TODO: number
 style = {}
-type = { build = "type_" }
+tabindex = {} # TODO: isize
+target = {} # TODO: enum
+title = {}
+translate = {} # TODO: enum
+type = { build = "type_" } # TODO: enum
+usemap = {}
 value = { build = "value_" } # TODO: do we really need this rename?
+width = {} # TODO: usize
+wrap = {} # TODO: enum
