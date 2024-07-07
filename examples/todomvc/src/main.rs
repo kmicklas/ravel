@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use ravel_web::{
-    attr as a, collections::btree_map, el::*, event::*, format_text,
+    attr::*, collections::btree_map, el::*, event::*, format_text,
     run::spawn_body, text::text, View,
 };
 use web_sys::wasm_bindgen::{JsCast as _, UnwrapThrowExt};
@@ -53,7 +53,7 @@ impl Filter {
     fn button(self, selected: Self) -> View!(Model) {
         li(a((
             format_text!("{:?}", self),
-            a::class((selected == self).then_some("selected")),
+            Class((selected == self).then_some("selected")),
             on_(Click, move |model: &mut Model| model.filter = self),
         )))
     }
@@ -68,17 +68,17 @@ fn item(filter: Filter, id: usize, item: &Item) -> View!(Model, '_) {
 
     show.then(|| {
         li((
-            a::class((
+            Class((
                 item.checked.then_some("completed"),
                 item.editing.then_some("editing"),
             )),
             div((
-                a::class("view"),
+                Class("view"),
                 input((
-                    a::type_("checkbox"),
-                    a::class("toggle"),
+                    Type("checkbox"),
+                    Class("toggle"),
                     // TODO: avoid circular dependency
-                    a::checked(item.checked),
+                    Checked(item.checked),
                     on(InputEvent, move |model: &mut Model, e| {
                         let input: web_sys::HtmlInputElement =
                             e.target().unwrap_throw().dyn_into().unwrap_throw();
@@ -93,17 +93,14 @@ fn item(filter: Filter, id: usize, item: &Item) -> View!(Model, '_) {
                     }),
                 )),
                 button((
-                    a::class("destroy"),
+                    Class("destroy"),
                     on_(Click, move |model: &mut Model| {
                         model.items.remove(&id);
                     }),
                 )),
             )),
             form((
-                input((
-                    a::class("edit"),
-                    a::value_(a::CloneString(&item.text)),
-                )),
+                input((Class("edit"), Value(CloneString(&item.text)))),
                 on(Active(Submit), move |model: &mut Model, e| {
                     e.prevent_default();
 
@@ -127,15 +124,15 @@ fn item(filter: Filter, id: usize, item: &Item) -> View!(Model, '_) {
 fn todomvc(model: &Model) -> View!(Model, '_) {
     (
         section((
-            a::class("todoapp"),
+            Class("todoapp"),
             header((
-                a::class("header"),
+                Class("header"),
                 h1("todos"),
                 form((
                     input((
-                        a::class("new-todo"),
-                        a::placeholder("What needs to be done?"),
-                        a::autofocus(true),
+                        Class("new-todo"),
+                        Placeholder("What needs to be done?"),
+                        Autofocus(true),
                     )),
                     on(Active(Submit), move |model: &mut Model, e| {
                         e.prevent_default();
@@ -155,24 +152,24 @@ fn todomvc(model: &Model) -> View!(Model, '_) {
                 )),
             )),
             section((
-                a::class("main"),
+                Class("main"),
                 input((
-                    a::id("toggle-all"),
-                    a::class("toggle-all"),
-                    a::type_("checkbox"),
+                    Id("toggle-all"),
+                    Class("toggle-all"),
+                    Type("checkbox"),
                 )),
-                label((a::for_("toggle-all"), "Mark all as complete")),
+                label((For("toggle-all"), "Mark all as complete")),
                 ul((
-                    a::class("todo-list"),
+                    Class("todo-list"),
                     btree_map(&model.items, |cx, id, i| {
                         cx.build(item(model.filter, *id, i))
                     }),
                 )),
             )),
             footer((
-                a::class("footer"),
+                Class("footer"),
                 span((
-                    a::class("todo-count"),
+                    Class("todo-count"),
                     strong(format_text!(
                         "{} {} left",
                         model.count(),
@@ -183,14 +180,14 @@ fn todomvc(model: &Model) -> View!(Model, '_) {
                     )),
                 )),
                 ul((
-                    a::class("filters"),
+                    Class("filters"),
                     // TODO: array impls
                     Filter::All.button(model.filter),
                     Filter::Active.button(model.filter),
                     Filter::Completed.button(model.filter),
                 )),
                 button((
-                    a::class("clear-completed"),
+                    Class("clear-completed"),
                     "Clear completed",
                     on_(Click, move |model: &mut Model| {
                         model.items.retain(|_, i| !i.checked)
@@ -198,7 +195,7 @@ fn todomvc(model: &Model) -> View!(Model, '_) {
                 )),
             )),
         )),
-        footer((a::class("info"), p("Double-click to edit a todo"))),
+        footer((Class("info"), p("Double-click to edit a todo"))),
     )
 }
 

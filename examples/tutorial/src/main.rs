@@ -46,7 +46,7 @@ fn basic_html() -> View!(Model) {
                 "Ravel",
                 // Likewise, HTML attributes defined in the [`attr`] module take
                 // their value (typically a string) as a parameter.
-                attr::href("https://github.com/kmicklas/ravel"),
+                attr::Href("https://github.com/kmicklas/ravel"),
             )),
             ".",
         )),

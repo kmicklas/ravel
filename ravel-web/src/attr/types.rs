@@ -224,7 +224,7 @@ pub struct AttrState<Saved> {
 }
 
 impl<Saved> AttrState<Saved> {
-    fn build<V: AttrValue<Saved = Saved>>(
+    pub(crate) fn build<V: AttrValue<Saved = Saved>>(
         parent: &web_sys::Element,
         name: &'static str,
         value: V,
@@ -240,7 +240,7 @@ impl<Saved> AttrState<Saved> {
         }
     }
 
-    fn rebuild<V: AttrValue<Saved = Saved>>(
+    pub(crate) fn rebuild<V: AttrValue<Saved = Saved>>(
         &mut self,
         parent: &web_sys::Element,
         name: &'static str,
@@ -283,95 +283,3 @@ impl<Kind: AttrKind, Value: AttrValue> Builder<Web> for Attr<Kind, Value> {
         state.rebuild(cx.parent, Kind::NAME, self.value)
     }
 }
-
-macro_rules! make_attr_value_type {
-    ($name:literal, $t:ident, $value_type:ty) => {
-        make_attr_value_type_state!(
-            $name,
-            $t,
-            $value_type,
-            std::convert::identity,
-            <V as AttrValue>::Saved
-        );
-    };
-    ($name:literal, $t:ident, $value_type:ty, $value_wrapper:ident) => {
-        make_attr_value_type_state!(
-            $name,
-            $t,
-            $value_type,
-            $value_wrapper,
-            <$value_wrapper as AttrValue>::Saved
-        );
-    };
-}
-
-macro_rules! make_attr_value_type_state {
-    ($name:literal, $t:ident, $value_type:ty, $value_wrapper:expr, $state_value:ty) => {
-        #[doc = concat!("`", $name, "` attribute.")]
-        #[derive(Copy, Clone)]
-        pub struct $t(pub $value_type);
-
-        impl Builder<Web> for $t {
-            type State = AttrState<$state_value>;
-
-            fn build(self, cx: BuildCx) -> Self::State {
-                AttrState::build(
-                    cx.position.parent,
-                    $name,
-                    $value_wrapper(self.0),
-                )
-            }
-
-            fn rebuild(self, cx: RebuildCx, state: &mut Self::State) {
-                state.rebuild(cx.parent, $name, $value_wrapper(self.0))
-            }
-        }
-    };
-}
-
-macro_rules! make_attr_value_trait {
-    ($name:literal, $t:ident, $value_trait:ident) => {
-        make_attr_value_trait_state!(
-            $name,
-            $t,
-            $value_trait,
-            std::convert::identity,
-            <V as AttrValue>::Saved
-        );
-    };
-    ($name:literal, $t:ident, $value_trait:ident, $value_wrapper:ident) => {
-        make_attr_value_trait_state!(
-            $name,
-            $t,
-            $value_trait,
-            $value_wrapper,
-            <$value_wrapper<V> as AttrValue>::Saved
-        );
-    };
-}
-
-macro_rules! make_attr_value_trait_state {
-    ($name:literal, $t:ident, $value_trait:ident, $value_wrapper:expr, $state_value:ty) => {
-        #[doc = concat!("`", $name, "` attribute.")]
-        #[derive(Copy, Clone)]
-        pub struct $t<V: $value_trait>(pub V);
-
-        impl<V: $value_trait> Builder<Web> for $t<V> {
-            type State = AttrState<$state_value>;
-
-            fn build(self, cx: BuildCx) -> Self::State {
-                AttrState::build(
-                    cx.position.parent,
-                    $name,
-                    $value_wrapper(self.0),
-                )
-            }
-
-            fn rebuild(self, cx: RebuildCx, state: &mut Self::State) {
-                state.rebuild(cx.parent, $name, $value_wrapper(self.0))
-            }
-        }
-    };
-}
-
-include!(concat!(env!("OUT_DIR"), "/gen_attr_types.rs"));
