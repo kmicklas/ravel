@@ -117,6 +117,46 @@ impl AttrValue for BooleanAttrValue {
     }
 }
 
+macro_rules! make_attr_value_copy_to_string {
+    ($t:ty) => {
+        impl AttrValue for $t {
+            type Saved = Self;
+
+            fn save(self) -> Self::Saved {
+                self
+            }
+
+            fn changed(&self, saved: &Self::Saved) -> bool {
+                *self != *saved
+            }
+
+            fn with_str<F, R>(&self, f: F) -> R
+            where
+                F: FnOnce(Option<&str>) -> R,
+            {
+                let s = self.to_string();
+                f(Some(&s))
+            }
+        }
+    };
+}
+
+make_attr_value_copy_to_string!(char);
+make_attr_value_copy_to_string!(f32);
+make_attr_value_copy_to_string!(f64);
+make_attr_value_copy_to_string!(i128);
+make_attr_value_copy_to_string!(i16);
+make_attr_value_copy_to_string!(i32);
+make_attr_value_copy_to_string!(i64);
+make_attr_value_copy_to_string!(i8);
+make_attr_value_copy_to_string!(isize);
+make_attr_value_copy_to_string!(u128);
+make_attr_value_copy_to_string!(u16);
+make_attr_value_copy_to_string!(u32);
+make_attr_value_copy_to_string!(u64);
+make_attr_value_copy_to_string!(u8);
+make_attr_value_copy_to_string!(usize);
+
 /// Trait for `class` attribute values.
 ///
 /// In HTML, `class` is a space separated list. Rather than requiring you to
