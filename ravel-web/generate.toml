@@ -148,8 +148,8 @@ action = {}
 allow = {}
 alt = {}
 aria-hidden = {} # TODO: enum
-as = { build = "as_" } # TODO: enum
-async = { build = "async_", value_type = "bool", value_wrapper = "BooleanAttrValue" }
+as = {} # TODO: enum
+async = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
 autocapitalize = {} # TODO: enum
 autocomplete = {} # TODO: space-separated, enum?
 autofocus = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
@@ -157,7 +157,7 @@ autoplay = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
 capture = {} # TODO: enum
 # charset = {}
 checked = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
-cite = { build = "cite" }
+cite = {}
 class = { value_trait = "ClassValue", value_wrapper = "Classes" }
 cols = {} # TODO: usize
 colspan = {} # TODO: usize
@@ -167,10 +167,10 @@ controls = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
 coords = {} # TODO: custom type
 crossorigin = {} # TODO: enum
 csp = {}
-data = { build = "data" }
+data = {}
 datetime = {} # TODO: custom type
 decoding = {} # TODO: enum
-default = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
+default = { type_name = "Default_", value_type = "bool", value_wrapper = "BooleanAttrValue" }
 defer = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
 dir = {} # TODO: enum
 dirname = {} # TODO: enum
@@ -179,8 +179,8 @@ download = {}
 draggable = {} # TODO: bool enum!
 enctype = {} # TODO: enum
 enterkeyhint = {}
-for = { build = "for_" }
-form = { build = "form" }
+for = {}
+form = {}
 formaction = {}
 formenctype = {} # TODO: enum
 formmethod = {} # TODO: enum
@@ -199,11 +199,11 @@ integrity = {}
 ismap = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
 itemprop = {}
 kind = {} # TODO: enum
-label = { build = "label" }
+label = {}
 lang = {}
 list = {}
 loading = {} # TODO: enum
-loop = { build = "loop_", value_type = "bool", value_wrapper = "BooleanAttrValue" }
+loop = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
 low = {} # TODO: number
 max = {} # TODO: number
 maxlength = {} # TODO: usize
@@ -237,8 +237,8 @@ selected = { value_type = "bool", value_wrapper = "BooleanAttrValue" }
 shape = {} # TODO: enum
 size = {} # TODO: usize
 sizes = {}
-slot = { build = "slot" }
-span = { build = "span" }
+slot = {}
+span = {}
 spellcheck = {} # TODO: bool enum!
 src = {}
 srcdoc = {}
@@ -251,8 +251,8 @@ tabindex = {} # TODO: isize
 target = {} # TODO: enum
 title = {}
 translate = {} # TODO: enum
-type = { build = "type_" } # TODO: enum
+type = {} # TODO: enum
 usemap = {}
-value = { build = "value_" } # TODO: do we really need this rename?
+value = {}
 width = {} # TODO: usize
 wrap = {} # TODO: enum
