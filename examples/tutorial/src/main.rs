@@ -1,3 +1,4 @@
+#![feature(type_alias_impl_trait)]
 use std::collections::BTreeMap;
 
 use ravel::{adapt_ref, with, with_local};
@@ -9,7 +10,7 @@ use ravel_web::{
     format_text,
     run::spawn_body,
     text::{display, text},
-    View,
+    State, View, ViewMarker,
 };
 use web_sys::{
     wasm_bindgen::{JsCast as _, UnwrapThrowExt},
@@ -53,31 +54,47 @@ fn basic_html() -> View!(Model) {
     ))
 }
 
+type SectionState<S: ViewMarker + State<Model>> =
+    impl ViewMarker + State<Model>;
+
+fn section<S, Body>(
+    title: &'static str,
+    body: Body,
+) -> impl View<ViewState = SectionState<S>>
+where
+    S: ViewMarker + State<Model>,
+    Body: View<ViewState = S>,
+{
+    el::section((el::h2(title), body))
+}
+
 /// Components can take data in parameters, which can be borrowed from shared
 /// state such as our [`Model`]. When using borrowed data, we need to add an
 /// appropriate bound to the return type for the captured lifetime (here `'_`).
 fn state(model: &Model) -> View!(Model, '_) {
-    (
-        el::h2("State"),
-        el::p(
-            // To generate strings dynamically, we can use standard format
-            // strings using [`format_text`].
-            format_text!("Count: {}", model.count),
+    section(
+        "State",
+        (
+            el::p(
+                // To generate strings dynamically, we can use standard format
+                // strings using [`format_text`].
+                format_text!("Count: {}", model.count),
+            ),
+            el::p((
+                "Also count: ",
+                // In the very common case of just displaying a scalar value like a
+                // number, it is easier and more efficient to use [`display`].
+                display(model.count),
+            )),
+            el::p((
+                "Message: ",
+                // Previously, we only genereted static strings, which can be used
+                // directly. This is also possible for a by-value [`String`].
+                //
+                // However, for any other string-like type, we need to use [`text`].
+                text(&model.message),
+            )),
         ),
-        el::p((
-            "Also count: ",
-            // In the very common case of just displaying a scalar value like a
-            // number, it is easier and more efficient to use [`display`].
-            display(model.count),
-        )),
-        el::p((
-            "Message: ",
-            // Previously, we only genereted static strings, which can be used
-            // directly. This is also possible for a by-value [`String`].
-            //
-            // However, for any other string-like type, we need to use [`text`].
-            text(&model.message),
-        )),
     )
 }
 
