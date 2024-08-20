@@ -74,6 +74,48 @@ impl Builder<Web> for &'static str {
     }
 }
 
+macro_rules! make_builder_web_to_string {
+    ($t:ty) => {
+        impl Builder<Web> for $t {
+            type State = TextState<Self>;
+
+            fn build(self, cx: BuildCx) -> Self::State {
+                let data = self.to_string();
+
+                let node = web_sys::Text::new_with_data(&data).unwrap_throw();
+                cx.position.insert(&node);
+
+                TextState { node, value: self }
+            }
+
+            fn rebuild(self, _: RebuildCx, state: &mut Self::State) {
+                if self == state.value {
+                    return;
+                }
+
+                state.node.set_data(&self.to_string());
+                state.value = self.clone();
+            }
+        }
+    };
+}
+
+make_builder_web_to_string!(char);
+make_builder_web_to_string!(f32);
+make_builder_web_to_string!(f64);
+make_builder_web_to_string!(i128);
+make_builder_web_to_string!(i16);
+make_builder_web_to_string!(i32);
+make_builder_web_to_string!(i64);
+make_builder_web_to_string!(i8);
+make_builder_web_to_string!(isize);
+make_builder_web_to_string!(u128);
+make_builder_web_to_string!(u16);
+make_builder_web_to_string!(u32);
+make_builder_web_to_string!(u64);
+make_builder_web_to_string!(u8);
+make_builder_web_to_string!(usize);
+
 /// Displays a value, updating when not equal to the previous value.
 pub struct Display<T: ToString + PartialEq + Clone> {
     value: T,

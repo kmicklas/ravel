@@ -71,6 +71,12 @@ fn state(model: &Model) -> View!(Model, '_) {
             display(model.count),
         )),
         el::p((
+            "Also count: ",
+            // In fact, if the value is a standard number type, then we can just
+            // use it directly.
+            model.count,
+        )),
+        el::p((
             "Message: ",
             // Previously, we only genereted static strings, which can be used
             // directly. This is also possible for a by-value [`String`].
@@ -131,7 +137,7 @@ fn local_state() -> View!(Model) {
             /// other component in our application), we can no longer call it
             /// directly here.
             fn display_counter(count: usize) -> View!(Model) {
-                el::p(("Local count: ", display(count)))
+                el::p(("Local count: ", count))
             }
 
             cx.build((
