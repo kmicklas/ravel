@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
   "ravel",
+  "ravel-inline-style",
   "ravel-web",
 
   "examples/todomvc",

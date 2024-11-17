@@ -1,0 +1,15 @@
+[package]
+name = "ravel-inline-style"
+version = "0.1.0"
+edition = "2021"
+description = "Inline style macro for ravel-web."
+license = "MIT"
+repository = "https://github.com/kmicklas/ravel"
+
+[dependencies]
+lightningcss = "1.0.0-alpha.59"
+proc-macro2 = "1.0.86"
+quote = "1.0.37"
+
+[lib]
+proc-macro = true
