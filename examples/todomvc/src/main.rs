@@ -147,7 +147,7 @@ fn todomvc(model: &Model) -> View!(Model, '_) {
                             .unwrap_throw();
 
                         model.add(input.value());
-                        input.set_value(""); // TOOD: clear input with framework
+                        input.set_value(""); // TODO: clear input with framework
                     }),
                 )),
             )),

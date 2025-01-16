@@ -48,7 +48,7 @@ where
 
 /// Creates a [`Builder`] which has access to a local state value.
 ///
-/// The `init` callback determines the inital value of the local state, and will
+/// The `init` callback determines the initial value of the local state, and will
 /// only be run when the component is initially built.
 ///
 /// Like [`with`], `f` must call [`Cx::build`] to return a [`Token`].

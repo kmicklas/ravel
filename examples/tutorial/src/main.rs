@@ -78,7 +78,7 @@ fn state(model: &Model) -> View!(Model, '_) {
         )),
         el::p((
             "Message: ",
-            // Previously, we only genereted static strings, which can be used
+            // Previously, we only generated static strings, which can be used
             // directly. This is also possible for a by-value [`String`].
             //
             // However, for any other string-like type, we need to use [`text`].
