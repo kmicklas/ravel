@@ -89,21 +89,17 @@ where
 }
 
 #[doc(hidden)]
-pub trait Captures<'a> {}
-impl<'a, T: ?Sized> Captures<'a> for T {}
-
-#[doc(hidden)]
 pub use ravel::State as ViewState;
 
 /// A convenience macro for declaring a [`trait@View`] type.
 ///
-/// The first parameter is the `Output` type of the [`trait@View`]'s
-/// [`Builder::State`]. Any additional parameters are captured lifetimes.
+/// Takes as a parameter the `Output` type of the [`trait@View`]'s
+/// [`Builder::State`].
 #[macro_export]
 macro_rules! View {
-    ($output:ty $(, $a:lifetime)*) => {
+    ($output:ty) => {
         impl $crate::View<
-            ViewState = impl $crate::ViewMarker + $crate::ViewState<$output>
-        > $(+ $crate::Captures<$a>)*
+            ViewState = impl use<> + $crate::ViewMarker + $crate::ViewState<$output>
+        >
     };
 }

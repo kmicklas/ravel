@@ -2,18 +2,17 @@ use std::collections::BTreeMap;
 
 use ravel::{adapt_ref, with, with_local};
 use ravel_web::{
-    any, attr,
+    View, any, attr,
     collections::{btree_map, iter},
     el,
     event::{self, on, on_},
     format_text,
     run::spawn_body,
     text::{display, text},
-    View,
 };
 use web_sys::{
-    wasm_bindgen::{JsCast as _, UnwrapThrowExt},
     HtmlInputElement,
+    wasm_bindgen::{JsCast as _, UnwrapThrowExt},
 };
 
 /// Our model type contains the global state of the application.
@@ -54,9 +53,8 @@ fn basic_html() -> View!(Model) {
 }
 
 /// Components can take data in parameters, which can be borrowed from shared
-/// state such as our [`Model`]. When using borrowed data, we need to add an
-/// appropriate bound to the return type for the captured lifetime (here `'_`).
-fn state(model: &Model) -> View!(Model, '_) {
+/// state such as our [`Model`].
+fn state(model: &Model) -> View!(Model) {
     (
         el::h2("State"),
         el::p(
@@ -165,7 +163,7 @@ fn local_state() -> View!(Model) {
 
 /// All of our views so far have had a static structure. Sometimes, we need to
 /// swap out or hide various components.
-fn dynamic_view(model: &Model) -> View!(Model, '_) {
+fn dynamic_view(model: &Model) -> View!(Model) {
     (
         el::h2("Dynamic view"),
         // In the general case, we need the following pattern to dynamically
@@ -200,7 +198,7 @@ fn dynamic_view(model: &Model) -> View!(Model, '_) {
 ///
 /// If the data is just an array which grows or shrinks at the end, we can use
 /// [`iter()`] to generate a [`trait@View`] over any iterator.
-fn lists(model: &Model) -> View!(Model, '_) {
+fn lists(model: &Model) -> View!(Model) {
     (
         el::h2("Map view"),
         el::p(el::table((
@@ -244,7 +242,7 @@ fn lists(model: &Model) -> View!(Model, '_) {
 }
 
 /// Putting it all together...
-fn tutorial(model: &Model) -> View!(Model, '_) {
+fn tutorial(model: &Model) -> View!(Model) {
     (
         basic_html(),
         state(model),

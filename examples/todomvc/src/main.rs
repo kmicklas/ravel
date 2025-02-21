@@ -1,8 +1,8 @@
 use std::collections::BTreeMap;
 
 use ravel_web::{
-    attr::*, collections::btree_map, el::*, event::*, format_text,
-    run::spawn_body, text::text, View,
+    View, attr::*, collections::btree_map, el::*, event::*, format_text,
+    run::spawn_body, text::text,
 };
 use web_sys::wasm_bindgen::{JsCast as _, UnwrapThrowExt};
 
@@ -59,7 +59,7 @@ impl Filter {
     }
 }
 
-fn item(filter: Filter, id: usize, item: &Item) -> View!(Model, '_) {
+fn item(filter: Filter, id: usize, item: &Item) -> View!(Model) {
     let show = match filter {
         Filter::All => true,
         Filter::Active => !item.checked,
@@ -121,7 +121,7 @@ fn item(filter: Filter, id: usize, item: &Item) -> View!(Model, '_) {
     })
 }
 
-fn todomvc(model: &Model) -> View!(Model, '_) {
+fn todomvc(model: &Model) -> View!(Model) {
     (
         section((
             Class("todoapp"),
