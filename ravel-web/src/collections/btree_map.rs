@@ -16,8 +16,8 @@ pub struct BTreeMapBuilder<'data, K, V, RenderItem, S> {
     phantom: PhantomData<S>,
 }
 
-impl<'data, K: 'static + Clone + Ord, V, RenderItem, S: 'static> Builder<Web>
-    for BTreeMapBuilder<'data, K, V, RenderItem, S>
+impl<K: 'static + Clone + Ord, V, RenderItem, S: 'static> Builder<Web>
+    for BTreeMapBuilder<'_, K, V, RenderItem, S>
 where
     RenderItem: Fn(Cx<S, Web>, &K, &V) -> Token<S>,
 {

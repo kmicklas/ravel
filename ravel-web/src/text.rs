@@ -151,8 +151,8 @@ pub struct DisplayRef<'a, T: ToString + PartialEq + Clone> {
     value: &'a T,
 }
 
-impl<'a, T: 'static + ToString + PartialEq + Clone> Builder<Web>
-    for DisplayRef<'a, T>
+impl<T: 'static + ToString + PartialEq + Clone> Builder<Web>
+    for DisplayRef<'_, T>
 {
     type State = DisplayState<T>;
 
@@ -204,7 +204,7 @@ pub fn display_ref<T: ToString + PartialEq + Clone>(
     DisplayRef { value }
 }
 
-impl<'a> Builder<Web> for Arguments<'a> {
+impl Builder<Web> for Arguments<'_> {
     type State = TextState<Cow<'static, str>>;
 
     fn build(self, cx: BuildCx) -> Self::State {
@@ -261,7 +261,7 @@ struct UpdateString<'a> {
     changed: bool,
 }
 
-impl<'a> Write for UpdateString<'a> {
+impl Write for UpdateString<'_> {
     fn write_str(&mut self, s: &str) -> std::fmt::Result {
         let remaining = &self.value[self.index..];
 

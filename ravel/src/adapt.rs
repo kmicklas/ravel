@@ -38,7 +38,7 @@ pub struct ThunkResult<S> {
     phantom: PhantomData<S>,
 }
 
-impl<'s, S> Thunk<'s, S> {
+impl<S> Thunk<'_, S> {
     /// Consumes the [`Thunk`], invoking [`State::run`] on `S` with `output`.
     pub fn run<Output>(self, output: &mut Output) -> ThunkResult<S>
     where

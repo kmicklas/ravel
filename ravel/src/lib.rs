@@ -118,7 +118,7 @@ pub struct Token<State> {
     phantom: PhantomData<State>,
 }
 
-impl<'cx, 'state, State, R: CxRep> Cx<'cx, 'state, State, R> {
+impl<State, R: CxRep> Cx<'_, '_, State, R> {
     /// Consumes a [`Builder`], returning a [`Token`] which completes the
     /// component construction.
     pub fn build<B: Builder<R, State = State>>(
